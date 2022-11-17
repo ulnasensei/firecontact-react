@@ -27,7 +27,7 @@ export const writeContactData = (id, username, phone, gender) => {
     });
 };
 
-export const getAllContacts = (setContacts) => {
+export const getAllContacts = (setContacts, setLoading = null) => {
     const reference = ref(db);
 
     get(child(reference, "contacts/")).then((snapshot) => {
@@ -36,7 +36,7 @@ export const getAllContacts = (setContacts) => {
             contacts.push(childSnapshot.val());
         });
         setContacts(contacts);
-        console.log(contacts);
+        if (setLoading) setLoading(false);
     });
 };
 
@@ -51,7 +51,6 @@ export const getContact = (id, setEditContact) => {
     get(child(reference, `contacts/${id}`))
         .then((snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val());
                 setEditContact(snapshot.val());
             } else {
                 console.log("No data available");

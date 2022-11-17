@@ -4,10 +4,11 @@ import { Box, Columns, Heading, Table, Form, Button, Icon } from "react-bulma-co
 import { useEffect, useState } from "react";
 import { deleteContact, getAllContacts, getContact, writeContactData } from "./firebase/firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faPenToSquare, faUser, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
     const [contacts, setContacts] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [editContact, setEditContact] = useState(false);
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -33,9 +34,9 @@ function App() {
     };
 
     useEffect(() => {
-        getAllContacts(setContacts);
+        getAllContacts(setContacts, setLoading);
     }, []);
-
+    //*TODO fix gender not being selected on edit.
     return (
         <Columns id="content">
             <Columns.Column size={"one-quarter"} id="left">
@@ -52,34 +53,45 @@ function App() {
                             <Form.Control>
                                 <Form.Input
                                     type={"text"}
+                                    placeholder="Username"
                                     required
                                     name="username"
                                     defaultValue={editContact ? editContact.username : ""}
                                 />
+                                <Icon align="left" size="small">
+                                    <FontAwesomeIcon icon={faUser} />
+                                </Icon>
                             </Form.Control>
                         </Form.Field>
                         <Form.Field>
-                            <Form.Label>Phone Number</Form.Label>
                             <Form.Control>
                                 <Form.Input
                                     type={"tel"}
+                                    placeholder="Phone Number"
                                     required
                                     name="phone"
                                     defaultValue={editContact ? editContact.phone : ""}
                                 />
+                                <Icon align="left" size="small">
+                                    <FontAwesomeIcon icon={faPhone} />
+                                </Icon>
                             </Form.Control>
                         </Form.Field>
                         <Form.Field>
                             <Form.Control>
-                                <Form.Radio value="Male" name="gender">
-                                    {"  "}Male
-                                </Form.Radio>
-                                <Form.Radio value="Female" name="gender">
-                                    {"  "}Female
-                                </Form.Radio>
-                                <Form.Radio value="Other" name="gender">
-                                    {"  "}Other
-                                </Form.Radio>
+                                <Form.Select
+                                    name="gender"
+                                    required
+                                    fullwidth
+                                    defaultValue={editContact ? editContact.gender : ""}
+                                >
+                                    <option value="" disabled>
+                                        Gender
+                                    </option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </Form.Select>
                             </Form.Control>
                         </Form.Field>
 
@@ -121,7 +133,7 @@ function App() {
                                                     onClick={handleDelete}
                                                     title={contact.id}
                                                 >
-                                                    <Icon>
+                                                    <Icon color={"danger"}>
                                                         <FontAwesomeIcon icon={faXmark} />
                                                     </Icon>
                                                 </Button>
@@ -133,7 +145,7 @@ function App() {
                                                     onClick={handleEdit}
                                                     title={contact.id}
                                                 >
-                                                    <Icon>
+                                                    <Icon color={"success"}>
                                                         <FontAwesomeIcon icon={faPenToSquare} />
                                                     </Icon>
                                                 </Button>
@@ -143,7 +155,11 @@ function App() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={5}>Nothing to show here...</td>
+                                    {loading ? (
+                                        <td colSpan={5}>Loading...</td>
+                                    ) : (
+                                        <td colSpan={5}>Nothing to show here...</td>
+                                    )}
                                 </tr>
                             )}
                         </tbody>
