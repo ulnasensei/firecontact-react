@@ -16,7 +16,6 @@ function App() {
 
         const id = editContact.id || Date.now();
         if (editContact) setEditContact(false);
-        console.log(id, username.value, phone.value, gender.value);
         writeContactData(id, username.value, phone.value, gender.value);
         e.target.reset();
         getAllContacts(setContacts);
@@ -28,9 +27,8 @@ function App() {
     };
     const handleEdit = (e) => {
         const id = e.currentTarget.title;
-        console.log(editContact);
+
         getContact(id, setEditContact);
-        console.log(editContact);
     };
 
     useEffect(() => {
