@@ -1,0 +1,11 @@
+#content {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+}
+#left {
+    min-width: 275px;
+}
+#right {
+    min-width: 550px;
+}
